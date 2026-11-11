@@ -17,7 +17,7 @@ import 'package:flutter/material.dart';
 // Valores del juego
 // ---------------------------------------------------------------------------
 
-// Nivel 3 de la demo: si se cambia este valor (por ejemplo a) y guardas,
+// Nivel 3 de la demo: cambia este valor (por ejemplo a 600) y guarda.
 // Con hot reload el salto se vuelve lento al instante, sin reiniciar el juego.
 const double gravedad = 1800; // píxeles por segundo al cuadrado
 const double fuerzaSalto = 700; // velocidad inicial del salto
