@@ -5,7 +5,6 @@
 
 import 'dart:math';
 
-import 'package:flame/camera.dart';
 import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
@@ -72,15 +71,16 @@ void main() {
 // El juego: raíz del árbol de componentes y dueño del ciclo del juego
 // ---------------------------------------------------------------------------
 
-class JuegoCorredor extends FlameGame<MundoCorredor> with HasCollisionDetection {
+class JuegoCorredor extends FlameGame<MundoCorredor>
+    with HasCollisionDetection {
   JuegoCorredor()
-      : super(
-          world: MundoCorredor(),
-          camera: CameraComponent.withFixedResolution(
-            width: anchoMundo,
-            height: altoMundo,
-          ),
-        );
+    : super(
+        world: MundoCorredor(),
+        camera: CameraComponent.withFixedResolution(
+          width: anchoMundo,
+          height: altoMundo,
+        ),
+      );
 
   @override
   Future<void> onLoad() async {
@@ -264,10 +264,10 @@ class MundoCorredor extends World
 
 class Suelo extends PositionComponent with HasGameReference<JuegoCorredor> {
   Suelo()
-      : super(
-          position: Vector2(0, alturaSuelo),
-          size: Vector2(anchoMundo, altoMundo - alturaSuelo),
-        );
+    : super(
+        position: Vector2(0, alturaSuelo),
+        size: Vector2(anchoMundo, altoMundo - alturaSuelo),
+      );
 
   static const double lado = 16 * escala;
   final List<SpriteComponent> _baldosas = [];
@@ -309,12 +309,12 @@ enum EstadoJugador { corriendo, saltando, cayendo, golpeado }
 class Jugador extends SpriteAnimationGroupComponent<EstadoJugador>
     with CollisionCallbacks, HasGameReference<JuegoCorredor> {
   Jugador()
-      : super(
-          position: Vector2(100, alturaSuelo),
-          size: Vector2.all(20 * escala),
-          anchor: Anchor.bottomLeft, // la posición marca los pies
-          priority: 1,
-        );
+    : super(
+        position: Vector2(100, alturaSuelo),
+        size: Vector2.all(20 * escala),
+        anchor: Anchor.bottomLeft, // la posición marca los pies
+        priority: 1,
+      );
 
   double velocidadY = 0;
 
@@ -431,11 +431,11 @@ mixin Obstaculo on PositionComponent, HasGameReference<JuegoCorredor> {
 class Meteorito extends SpriteComponent
     with HasGameReference<JuegoCorredor>, Obstaculo {
   Meteorito()
-      : super(
-          position: Vector2(anchoMundo, alturaSuelo),
-          size: Vector2.all(16 * escala),
-          anchor: Anchor.bottomLeft,
-        );
+    : super(
+        position: Vector2(anchoMundo, alturaSuelo),
+        size: Vector2.all(16 * escala),
+        anchor: Anchor.bottomLeft,
+      );
 
   @override
   Future<void> onLoad() async {
@@ -455,11 +455,11 @@ class Meteorito extends SpriteComponent
 class Cristal extends SpriteAnimationComponent
     with HasGameReference<JuegoCorredor>, Obstaculo {
   Cristal()
-      : super(
-          position: Vector2(anchoMundo, alturaSuelo),
-          size: Vector2(16, 24) * escala,
-          anchor: Anchor.bottomLeft,
-        );
+    : super(
+        position: Vector2(anchoMundo, alturaSuelo),
+        size: Vector2(16, 24) * escala,
+        anchor: Anchor.bottomLeft,
+      );
 
   @override
   Future<void> onLoad() async {
@@ -542,10 +542,7 @@ class BotonPixel extends StatelessWidget {
         ),
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
       ),
-      child: Text(
-        texto,
-        style: estiloTexto.copyWith(color: colorOscuro),
-      ),
+      child: Text(texto, style: estiloTexto.copyWith(color: colorOscuro)),
     );
   }
 }
