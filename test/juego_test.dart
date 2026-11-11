@@ -21,7 +21,7 @@ void main() {
       await juego.ready();
     },
     verify: (juego, _) async {
-      final mundo = juego.world as MundoCorredor;
+      final mundo = juego.world;
 
       // Verifica que jugando empieza en false (pantalla de inicio).
       expect(mundo.jugando, isFalse);
@@ -54,7 +54,7 @@ void main() {
   tester.testGameWidget(
     'sin jugar, no se crean obstáculos ni se suman puntos tras 2 s',
     verify: (juego, _) async {
-      final mundo = juego.world as MundoCorredor;
+      final mundo = juego.world;
 
       // El estado inicial debe ser jugando == false.
       expect(mundo.jugando, isFalse);
@@ -79,7 +79,7 @@ void main() {
   tester.testGameWidget(
     'alternarDepuracion activa y desactiva debugMode',
     verify: (juego, _) async {
-      final mundo = juego.world as MundoCorredor;
+      final mundo = juego.world;
 
       // Por defecto debugMode está desactivado.
       expect(mundo.debugMode, isFalse);

@@ -35,6 +35,13 @@ jobs:
       - name: Instalar dependencias
         run: flutter pub get
 
+      # Verificación de calidad: análisis estático y pruebas automatizadas
+      - name: Analizar el código
+        run: flutter analyze
+
+      - name: Ejecutar pruebas
+        run: flutter test
+
       # El base-href debe coincidir con el nombre del repositorio,
       # porque Pages sirve el sitio en https://<usuario>.github.io/flame-engine-demo/
       - name: Compilar la versión web
