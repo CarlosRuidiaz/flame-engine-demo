@@ -1,0 +1,57 @@
+# Compila la versión web del juego y la publica en GitHub Pages
+# cada vez que se hace push a la rama main.
+name: Publicar en GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # Permite lanzarlo a mano desde la pestaña Actions.
+  workflow_dispatch:
+
+# Permisos que necesita deploy-pages para publicar el sitio.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Solo una publicación a la vez; si llega otro push, se cancela la anterior en curso.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  compilar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v7
+
+      - name: Instalar Flutter estable
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Instalar dependencias
+        run: flutter pub get
+
+      # El base-href debe coincidir con el nombre del repositorio,
+      # porque Pages sirve el sitio en https://<usuario>.github.io/flame-engine-demo/
+      - name: Compilar la versión web
+        run: flutter build web --release --base-href /flame-engine-demo/
+
+      - name: Subir el sitio como artefacto de Pages
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: build/web
+
+  publicar:
+    needs: compilar
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publicacion.outputs.page_url }}
+    steps:
+      - name: Publicar en GitHub Pages
+        id: publicacion
+        uses: actions/deploy-pages@v5
