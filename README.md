@@ -73,3 +73,8 @@ assets/images/        Las 8 imágenes en pixel art (sprites, fondo y parallax)
 
 Cada push a `main` ejecuta el workflow [`deploy.yml`](.github/workflows/deploy.yml), que compila la versión web con
 `flutter build web --release --base-href /flame-engine-demo/` y la publica en GitHub Pages.
+
+## Integrantes
+
+- [CarlosRuidiaz](https://github.com/CarlosRuidiaz)
+- [Claudia Elias](https://github.com/ClaudiaElias)
