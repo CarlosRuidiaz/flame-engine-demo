@@ -4,13 +4,32 @@
 
 import 'package:flame_test/flame_test.dart';
 import 'package:flame/components.dart';
+import 'package:flame/game.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:flame_engine_demo/main.dart';
+import 'package:flame_engine_demo/features/juego/data/datasources/local/memoria_record_source.dart';
+import 'package:flame_engine_demo/features/juego/data/repositories/record_repository.dart';
+import 'package:flame_engine_demo/features/juego/ui/viewmodels/partida_controller.dart';
+import 'package:flame_engine_demo/features/juego/ui/views/componentes/jugador.dart';
+import 'package:flame_engine_demo/features/juego/ui/views/componentes/obstaculos.dart';
+import 'package:flame_engine_demo/features/juego/ui/views/componentes/suelo.dart';
+import 'package:flame_engine_demo/features/juego/ui/views/juego_corredor.dart';
+import 'package:flame_engine_demo/features/juego/ui/views/pagina_juego.dart';
 
 void main() {
-  // Instancia de FlameTester para JuegoCorredor.
-  final tester = FlameTester(JuegoCorredor.new);
+  // Instancia de FlameTester para JuegoCorredor. Cada prueba arma el juego
+  // con sus capas reales: fuente en memoria, repositorio y controlador,
+  // y con los mismos overlays de la app.
+  final tester = FlameTester(
+    () => JuegoCorredor(
+      partida: PartidaController(RecordRepository(MemoriaRecordSource())),
+    ),
+    createGameWidget: (juego) => GameWidget(
+      game: juego,
+      overlayBuilderMap: overlaysDelJuego,
+      initialActiveOverlays: overlaysIniciales,
+    ),
+  );
 
   // Prueba 1: Al cargar, el mundo contiene un Jugador, un Suelo,
   // un ParallaxComponent, y el juego empieza con jugando == false.
@@ -91,6 +110,47 @@ void main() {
       // Segunda llamada: debe desactivarlo de nuevo.
       juego.alternarDepuracion();
       expect(mundo.debugMode, isFalse);
+    },
+  );
+
+  // Prueba 4: el controlador y los componentes trabajan juntos. Sin saltar,
+  // el primer obstáculo choca con Lola: se pierde, el mundo se congela, se
+  // guarda el récord y aparece la pantalla de choque. Reintentar la quita
+  // y limpia los obstáculos.
+  tester.testGameWidget(
+    'al chocar se pierde y reintentar empieza una partida nueva',
+    setUp: (juego, _) async {
+      await juego.ready();
+    },
+    verify: (juego, tester) async {
+      final mundo = juego.world;
+      mundo.partida.empezar();
+
+      // Avanza cuadro a cuadro a 60 Hz, como mucho 6 segundos de juego.
+      // Va dentro de runAsync para que las imágenes de los obstáculos
+      // se puedan decodificar fuera del reloj falso de la prueba.
+      await tester.runAsync(() async {
+        for (var i = 0; i < 60 * 6 && !mundo.perdido; i++) {
+          juego.update(1 / 60);
+          await juego.ready();
+        }
+      });
+
+      expect(mundo.perdido, isTrue);
+      expect(mundo.velocidad, 0);
+      expect(mundo.record, greaterThan(0));
+      expect(juego.overlays.isActive('perdiste'), isTrue);
+
+      mundo.reiniciar();
+      await tester.runAsync(() async {
+        juego.update(0); // procesa las bajas pendientes del árbol
+        await juego.ready();
+      });
+
+      expect(mundo.jugando, isTrue);
+      expect(mundo.puntos, 0);
+      expect(mundo.children.whereType<Obstaculo>(), isEmpty);
+      expect(juego.overlays.isActive('perdiste'), isFalse);
     },
   );
 }

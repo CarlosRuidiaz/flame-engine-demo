@@ -39,8 +39,12 @@ jobs:
       - name: Analizar el código
         run: flutter analyze
 
-      - name: Ejecutar pruebas
-        run: flutter test
+      # Las reglas del juego se prueban sin pantalla; el juego, con flame_test.
+      - name: Pruebas unitarias
+        run: flutter test test/unit
+
+      - name: Pruebas de widget
+        run: flutter test test/widget
 
       # El base-href debe coincidir con el nombre del repositorio,
       # porque Pages sirve el sitio en https://<usuario>.github.io/flame-engine-demo/
