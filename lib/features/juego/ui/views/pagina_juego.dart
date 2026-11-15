@@ -20,8 +20,8 @@ final Map<String, OverlayWidgetBuilder<JuegoCorredor>> overlaysDelJuego = {
 const List<String> overlaysIniciales = ['inicio', 'controles'];
 
 // La pantalla del juego: el juego es un widget más dentro de la app de Flutter.
-// Es StatefulWidget para crear el juego una sola vez: así el hot reload
-// reconstruye la pantalla sin reiniciar la partida.
+// Es StatefulWidget para crear el juego y su GameWidget una sola vez: así el
+// hot reload reconstruye la pantalla sin reiniciar la partida.
 class PaginaJuego extends StatefulWidget {
   const PaginaJuego({super.key});
 
@@ -34,17 +34,19 @@ class _PaginaJuegoState extends State<PaginaJuego> {
     partida: Get.find<PartidaController>(),
   );
 
+  // El constructor de GameWidget vuelve a activar initialActiveOverlays.
+  // Si se creara en build, cada hot reload mostraría otra vez la pantalla de
+  // inicio encima de la partida; por eso se crea una sola vez aquí.
+  late final Widget vistaJuego = GameWidget<JuegoCorredor>(
+    game: juego,
+    loadingBuilder: (context) =>
+        const Center(child: CircularProgressIndicator(color: colorAcento)),
+    overlayBuilderMap: overlaysDelJuego,
+    initialActiveOverlays: overlaysIniciales,
+  );
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: colorOscuro,
-      body: GameWidget<JuegoCorredor>(
-        game: juego,
-        loadingBuilder: (context) =>
-            const Center(child: CircularProgressIndicator(color: colorAcento)),
-        overlayBuilderMap: overlaysDelJuego,
-        initialActiveOverlays: overlaysIniciales,
-      ),
-    );
+    return Scaffold(backgroundColor: colorOscuro, body: vistaJuego);
   }
 }
