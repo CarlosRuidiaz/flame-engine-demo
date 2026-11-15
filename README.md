@@ -11,6 +11,12 @@ El código está organizado con arquitectura limpia (ver [Arquitectura](#arquite
 
 Funciona en el navegador del computador y del celular, sin instalar nada.
 
+## Video Presentación Flame Engine
+
+👉 **https://youtu.be/bBUDvyRViDA**
+
+Exposición sobre Flame Engine y presentación de la demo. 
+
 ## Requisitos para ejecutarlo localmente
 
 - [Flutter](https://docs.flutter.dev/get-started/install) estable con **Dart 3.11 o superior** (Flame 1.38.2 lo exige).
