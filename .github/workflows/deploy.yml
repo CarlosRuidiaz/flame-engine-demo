@@ -35,9 +35,12 @@ jobs:
       - name: Instalar dependencias
         run: flutter pub get
 
-      # Verificación de calidad: análisis estático y pruebas automatizadas
+      # Verificación de calidad: análisis estático y pruebas automatizadas.
+      # Los avisos informativos (por ejemplo, APIs marcadas como obsoletas en
+      # una versión nueva de Flutter) se muestran pero no detienen el deploy;
+      # los errores y las advertencias sí.
       - name: Analizar el código
-        run: flutter analyze
+        run: flutter analyze --no-fatal-infos
 
       # Las reglas del juego se prueban sin pantalla; el juego, con flame_test.
       - name: Pruebas unitarias
